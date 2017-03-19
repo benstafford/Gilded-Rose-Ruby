@@ -1,35 +1,4 @@
 module GildedRose
-
-  def self.for(name:, days_remaining:, quality:)
-    @name = name
-    @item = klass_for(name).new(days_remaining, quality)
-  end
-
-  def self.klass_for(name)
-    case name
-    when "Normal Item"
-      Normal
-    when "Aged Brie"
-      Brie
-    when "Sulfuras, Hand of Ragnaros"
-      Item
-    when "Backstage passes to a TAFKAL80ETC concert"
-      Backstage
-    end
-  end
-
-  def tick
-    item.tick
-  end
-
-  def quality
-    item.quality
-  end
-
-  def days_remaining
-    item.days_remaining
-  end
-
   class Item
     attr_reader :days_remaining, :quality
 
@@ -71,5 +40,27 @@ module GildedRose
       @quality += 1 if days_remaining < 10
       @quality += 1 if days_remaining < 5
     end
+  end
+
+  DEFAULT_CLASS = Item
+  SPECIALIZED_CLASSES = {
+    'Normal Item' => Normal,
+    'Aged Brie' => Brie,
+    'Backstage passes to a TAFKAL80ETC concert' => Backstage
+  }
+  def self.for(name:, days_remaining:, quality:)
+    (SPECIALIZED_CLASSES[name] || DEFAULT_CLASS).new(days_remaining, quality)
+  end
+
+  def tick
+    item.tick
+  end
+
+  def quality
+    item.quality
+  end
+
+  def days_remaining
+    item.days_remaining
   end
 end
